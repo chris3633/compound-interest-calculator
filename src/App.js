@@ -28,6 +28,8 @@ function App() {
   const [darkTheme, setDarkTheme] = useState(true); // Theme state
   const [chartData, setChartData] = useState([]); // State to hold chart data
 
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7266949375176151"
+  crossorigin="anonymous"></script>
 
 
   const calculateCompoundInterest = () => {
