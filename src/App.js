@@ -16,6 +16,7 @@ import {
 
 
 function App() {
+  document.title = "NORA - Compound Interest Calculator"; // Set the title here
   const [principal, setPrincipal] = useState('');
   const [rate, setRate] = useState('');
   const [time, setTime] = useState('');
