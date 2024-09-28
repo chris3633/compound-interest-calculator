@@ -29,6 +29,7 @@ function App() {
   const [chartData, setChartData] = useState([]); // State to hold chart data
 
 
+
   const calculateCompoundInterest = () => {
     setErrorMessage(''); // Clear previous errors
 
@@ -124,14 +125,15 @@ setChartData(chartData); // Set the data for the chart
   // Reset results when deposit frequency or compound frequency changes
   const handleDepositFrequencyChange = (frequency) => {
     setDepositFrequency(frequency);
-    setTotalAmount(null);
-    setResult(null);
+    //setTotalAmount(null);
+    //setResult(null);
+
   };
 
   const handleCompoundFrequencyChange = (frequency) => {
     setCompoundFrequency(frequency);
-    setTotalAmount(null);
-    setResult(null);
+    //setTotalAmount(null);
+    //setResult(null);
   };
 
   // Toggle theme function
@@ -203,38 +205,63 @@ setChartData(chartData); // Set the data for the chart
       <Box sx={{ width: '300px', marginBottom: 0 }}>
         <Typography level="body1">Principal Amount:</Typography>
         <Input
-          type="number"
-          value={principal}
-          onChange={(e) => setPrincipal(e.target.value)}
-          sx={{ marginBottom: 2 }}
-        />
+  type="number"
+  value={principal}
+  onChange={(e) => {
+    const newValue = Number(e.target.value);
+    // Update the state only if the new value is 0 or greater
+    if (newValue >= 0) {
+      setPrincipal(newValue);
+    }
+  }}
+  sx={{ marginBottom: 2 }}
+/>
       </Box>
       <Box sx={{ width: '300px', marginBottom: 0 }}>
         <Typography level="body1">Interest Rate (%):</Typography>
         <Input
-          type="number"
-          value={rate}
-          onChange={(e) => setRate(e.target.value)}
-          sx={{ marginBottom: 2 }}
-        />
+  type="number"
+  value={rate}
+  onChange={(e) => {
+    const newValue = Number(e.target.value);
+    // Update the state only if the new value is 0 or greater
+    if (newValue >= 0) {
+      setRate(newValue);
+    }
+  }}
+  sx={{ marginBottom: 2 }}
+/>
       </Box>
       <Box sx={{ width: '300px', marginBottom: 0 }}>
         <Typography level="body1">Time (years):</Typography>
         <Input
-          type="number"
-          value={time}
-          onChange={(e) => setTime(e.target.value)}
-          sx={{ marginBottom: 2 }}
-        />
+  type="number"
+  value={time}
+  onChange={(e) => {
+    const newValue = Number(e.target.value);
+    // Update the state only if the new value is 0 or greater
+    if (newValue >= 0) {
+      setTime(newValue);
+    }
+  }}
+  sx={{ marginBottom: 2 }}
+/>
       </Box>
       <Box sx={{ width: '300px', marginBottom: 0 }}>
         <Typography level="body1">{depositFrequency === 'monthly' ? 'Monthly Deposit:' : 'Yearly Deposit:'}</Typography>
         <Input
-          type="number"
-          value={depositAmount}
-          onChange={(e) => setDepositAmount(e.target.value)}
-          sx={{ marginBottom: 1 }} // Ensure some spacing below the input
-        />
+  type="number"
+  value={depositAmount}
+  onChange={(e) => {
+    const newValue = Number(e.target.value);
+    // Update the state only if the new value is 0 or greater
+    if (newValue >= 0) {
+      setDepositAmount(newValue);
+    }
+  }}
+  sx={{ marginBottom: 1 }} // Ensure some spacing below the input
+/>
+
       </Box>
       <Box sx={{ width: '300px', marginBottom: 2, display: 'flex', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
