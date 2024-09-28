@@ -33,14 +33,9 @@ function App() {
   const calculateCompoundInterest = () => {
     setErrorMessage(''); // Clear previous errors
 
-    // Check for empty fields
-    if (!principal || !rate || !time || !depositAmount) {
-      setErrorMessage('Please fill in all fields.');
-      return;
-    }
 
       // Check for empty fields
-  if (!principal || !rate || !time || !depositAmount) {
+  if (!rate || !time || !depositAmount) {
     setErrorMessage('Please fill in all fields.');
     return;
   }
@@ -206,22 +201,33 @@ setChartData(chartData); // Set the data for the chart
         <Typography level="body1">Principal Amount:</Typography>
         <Input
   type="number"
-  value={principal}
+  value={principal === 0 ? '' : principal} // Don't display 0 by default
   onChange={(e) => {
-    const newValue = Number(e.target.value);
-    // Update the state only if the new value is 0 or greater
-    if (newValue >= 0) {
-      setPrincipal(newValue);
+    let newValue = e.target.value;
+
+    // If the input is empty, set the principal to 0
+    if (newValue === '') {
+      setPrincipal(0);
+    } else {
+      // Remove leading zeros if any
+      newValue = newValue.replace(/^0+(?=\d)/, '');
+
+      // Prevent negative values
+      if (Number(newValue) >= 0) {
+        setPrincipal(Number(newValue)); // Convert to number and set state
+      }
     }
   }}
   sx={{ marginBottom: 2 }}
 />
+
+
       </Box>
       <Box sx={{ width: '300px', marginBottom: 0 }}>
         <Typography level="body1">Interest Rate (%):</Typography>
         <Input
   type="number"
-  value={rate}
+  value={rate === 0 ? '' : rate} // Don't display 0 by default
   onChange={(e) => {
     const newValue = Number(e.target.value);
     // Update the state only if the new value is 0 or greater
@@ -236,7 +242,8 @@ setChartData(chartData); // Set the data for the chart
         <Typography level="body1">Time (years):</Typography>
         <Input
   type="number"
-  value={time}
+  value={time === 0 ? '' : time} // Don't display 0 by default
+
   onChange={(e) => {
     const newValue = Number(e.target.value);
     // Update the state only if the new value is 0 or greater
@@ -251,7 +258,8 @@ setChartData(chartData); // Set the data for the chart
         <Typography level="body1">{depositFrequency === 'monthly' ? 'Monthly Deposit:' : 'Yearly Deposit:'}</Typography>
         <Input
   type="number"
-  value={depositAmount}
+  value={depositAmount === 0 ? '' : depositAmount} // Don't display 0 by default
+
   onChange={(e) => {
     const newValue = Number(e.target.value);
     // Update the state only if the new value is 0 or greater
