@@ -35,7 +35,7 @@ function App() {
 
 
       // Check for empty fields
-  if (!rate || !time || !depositAmount) {
+  if (!rate || !time ) {
     setErrorMessage('Please fill in all fields.');
     return;
   }
@@ -140,13 +140,20 @@ setChartData(chartData); // Set the data for the chart
   const maxValue = Math.max(...chartData.map(d => parseFloat(d.valueWithInterest)));
   let tickInterval;
 
-  if (maxValue <= 20000) {
-      tickInterval = 5000; // Show every 5k if max is <= 20k
-  } else if (maxValue <= 80000) {
-      tickInterval = 10000; // Show every 10k if max is <= 80k
-  } else {
-      tickInterval = 20000; // Show every 20k if max is > 80k
-  }
+
+  if (maxValue <= 1000) {
+    tickInterval = 100; // Show every 100 if max is <= 1000
+} else if (maxValue <= 5000) {
+    tickInterval = 500; // Show every 500 if max is <= 5000
+} else if (maxValue <= 10000) {
+    tickInterval = 1000; // Show every 1000 if max is <= 10000
+} else if (maxValue <= 20000) {
+    tickInterval = 5000; // Show every 5000 if max is <= 20000
+} else if (maxValue <= 80000) {
+    tickInterval = 10000; // Show every 10000 if max is <= 80000
+} else {
+    tickInterval = 20000; // Show every 20000 if max is > 80000
+}
 
   // Create dynamic ticks array
   const ticks = Array.from(
@@ -201,7 +208,7 @@ setChartData(chartData); // Set the data for the chart
         <Typography level="body1">Principal Amount:</Typography>
         <Input
   type="number"
-  value={principal === 0 ? '' : principal} // Don't display 0 by default
+  value={principal === 0 ? '0' : principal.toString()} // Display 0 by default
   onChange={(e) => {
     let newValue = e.target.value;
 
@@ -209,15 +216,17 @@ setChartData(chartData); // Set the data for the chart
     if (newValue === '') {
       setPrincipal(0);
     } else {
-      // Remove leading zeros if any
-      newValue = newValue.replace(/^0+(?=\d)/, '');
+      // Convert to number
+      const numericValue = Number(newValue);
 
-      // Prevent negative values
-      if (Number(newValue) >= 0) {
-        setPrincipal(Number(newValue)); // Convert to number and set state
+      // Prevent negative values and ensure it is a valid number
+      if (!isNaN(numericValue) && numericValue >= 0) {
+        // Set the principal directly based on the number
+        setPrincipal(numericValue); // This will not retain leading zeros
       }
     }
-  }}
+    }}
+
   sx={{ marginBottom: 2 }}
 />
 
@@ -258,14 +267,27 @@ setChartData(chartData); // Set the data for the chart
         <Typography level="body1">{depositFrequency === 'monthly' ? 'Monthly Deposit:' : 'Yearly Deposit:'}</Typography>
         <Input
   type="number"
-  value={depositAmount === 0 ? '' : depositAmount} // Don't display 0 by default
+  value={depositAmount === 0 ? '0' : depositAmount.toString()}// Display 0 by default
 
   onChange={(e) => {
-    const newValue = Number(e.target.value);
-    // Update the state only if the new value is 0 or greater
-    if (newValue >= 0) {
-      setDepositAmount(newValue);
+    const newValue = e.target.value; // Keep it as a string initially
+
+    // Allow updating the state to 0 if input is empty or if it's a valid non-negative number
+    if (newValue === '') {
+      setDepositAmount(0); // Set to 0 if empty
+    } else {
+      // Remove leading zeros
+      const sanitizedValue = newValue.replace(/^0+(?=\d)/, '');
+
+      // Convert to number
+      const numericValue = Number(sanitizedValue);
+
+      // Check if it's a valid non-negative number
+      if (!isNaN(numericValue) && numericValue >= 0) {
+        setDepositAmount(numericValue); // Set the numeric value
+      }
     }
+
   }}
   sx={{ marginBottom: 1 }} // Ensure some spacing below the input
 />
@@ -346,8 +368,14 @@ setChartData(chartData); // Set the data for the chart
         domain={[0, (dataMax) => Math.ceil(dataMax / tickInterval) * tickInterval]}
         ticks={ticks}
         padding={{ top: 10, bottom: 10 }} // Adjust padding to create space
-        tickFormatter={(value) => `${value / 1000}k`} // Format numbers as '10k', '20k', etc.
-    >
+        tickFormatter={(value) => {
+          // Check if the maxValue is greater than or equal to 10000
+          if (maxValue >= 10000) {
+              return `${value / 1000}k`; // Format as '10k', '20k', etc.
+          } else {
+              return value; // Show regular number for values less than 10k
+          }
+      }}    >
         <Label
             value="Amount ($)"
             angle={-90}
